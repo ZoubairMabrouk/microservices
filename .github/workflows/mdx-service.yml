@@ -2,7 +2,7 @@ name: mdx-service
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'mdx-service/**'
       - '.github/workflows/mdx-service.yml'

@@ -3,7 +3,7 @@ name: gateway-service
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'gateway-service/**'
       - '.github/workflows/gateway-service.yml'

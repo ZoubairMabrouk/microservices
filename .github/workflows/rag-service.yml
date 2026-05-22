@@ -3,7 +3,7 @@ name: rag-service
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'rag-service/**'
       - '.github/workflows/rag-service.yml'
