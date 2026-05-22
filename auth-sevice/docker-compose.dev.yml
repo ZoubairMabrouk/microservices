@@ -1,0 +1,69 @@
+version: "3.9"
+
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/zoubairmabrouk/auth-service:latest  # Utiliser une version spécifique, pas latest
+    container_name: auth-service
+    hostname: auth-service
+    restart: always
+    ports:
+      - "8084:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=auth_service_db;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=True;Connection Timeout=30;
+      Jwt__SecretKey: qsjhdhqsdhhuzhdhdgeudgudsgv,nfkuhzgezfuvjhknfjhsdbgvsqjhvvudsdfhvfuzbhjdqsjbddahugfu
+      Jwt__Issuer: AUTH-Sevice
+      Jwt__Audience: platform-services
+      Jwt__ExpirationMinutes: 60
+    depends_on:
+      - sqlserver
+    networks:
+      - platform-network
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
+    #     labels: "service=auth-service"
+    # security_opt:
+    #   - no-new-privileges:true
+    # read_only: true
+    # tmpfs:
+    #   - /tmp
+    #   - /app/logs
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: auth-db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Zoubair@2026"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - sqlserver_log:/var/opt/mssql/backup
+    ports:
+      - "1433:1433"
+    restart: always
+    networks:
+      - platform-network
+    
+  
+volumes:
+  sqlserver_data:
+    driver: local
+  sqlserver_log:
+    driver: local
+  
+networks:
+  platform-network:
+    external: true

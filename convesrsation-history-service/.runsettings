@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Configuration de couverture de code pour les tests -->
+  <CodeCoverage>
+    <ModulePaths>
+      <ModulePath>.*\.dll$</ModulePath>
+    </ModulePaths>
+    <Functions>
+      <Exclude>
+        <Function>
+          <Module>.*Tests.*</Module>
+        </Function>
+        <Function>
+          <Module>.*\.GeneratedMSBuildEditorConfig.*</Module>
+        </Function>
+      </Exclude>
+    </Functions>
+    <Attributes>
+      <Exclude>
+        <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+        <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+        <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+        <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+      </Exclude>
+    </Attributes>
+    <Sources>
+      <Exclude>
+        <Source>.*\\obj\\.*</Source>
+        <Source>.*\\.vs\\.*</Source>
+        <Source>.*Tests.*</Source>
+      </Exclude>
+    </Sources>
+    <SymbolSearchPaths>
+      <SymbolSearchPath>.\</SymbolSearchPath>
+    </SymbolSearchPaths>
+    <BinaryInstrumentationEnabled>True</BinaryInstrumentationEnabled>
+    <DeterministicInstrumentation>False</DeterministicInstrumentation>
+    <UseVerifiableInstrumentation>False</UseVerifiableInstrumentation>
+    <AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
+    <CollectAspDotNet>False</CollectAspDotNet>
+    <CollectStaticLinkingData>False</CollectStaticLinkingData>
+    <EnableStaticNativeInstrumentation>False</EnableStaticNativeInstrumentation>
+    <EnableDynamicInstrumentation>True</EnableDynamicInstrumentation>
+    <InstrumentationSearchPath>.\;.\obj\Debug</InstrumentationSearchPath>
+    <InstrumentationSearchPathExclude>.*\\Microsoft.VisualStudio\\.*</InstrumentationSearchPathExclude>
+  </CodeCoverage>
+
+  <LoggerRunSettings>
+    <Verbosity>Detailed</Verbosity>
+  </LoggerRunSettings>
+
+  <!-- Configuration pour OpenCover -->
+  <Collectors>
+    <Collector friendlyName="XPlat code coverage">
+      <Configuration>
+        <Format>opencover</Format>
+        <Exclude>[ConversationHistoryService.Tests]*,[*.Tests]*,[xunit*]*</Exclude>
+      </Configuration>
+    </Collector>
+  </Collectors>
+</RunSettings>

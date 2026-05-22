@@ -1,0 +1,86 @@
+# EditorConfig pour ConversationService
+
+root = true
+
+# Tous les fichiers
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Fichiers C#
+[*.cs]
+indent_size = 4
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_method_call_parameter_list_parentheses = false
+
+# Nouvelle convention de style C# 10+
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+# Règles de style
+dotnet_style_qualification_for_field = false:silent
+dotnet_style_qualification_for_property = false:silent
+dotnet_style_qualification_for_method = false:silent
+dotnet_style_qualification_for_event = false:silent
+
+# Préférer les types explicites
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+
+# Règles de nommage
+dotnet_naming_rule.interfaces_should_be_begins_with_i.severity = suggestion
+dotnet_naming_rule.interfaces_should_be_begins_with_i.symbols = interface
+dotnet_naming_rule.interfaces_should_be_begins_with_i.style = begins_with_i
+
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_rule.non_private_properties_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.non_private_properties_should_be_pascal_case.symbols = non_private_properties
+dotnet_naming_rule.non_private_properties_should_be_pascal_case.style = pascal_case
+
+# Symboles
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.interface.required_modifiers =
+
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.types.required_modifiers =
+
+dotnet_naming_symbols.non_private_properties.applicable_kinds = property
+dotnet_naming_symbols.non_private_properties.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.non_private_properties.required_modifiers =
+
+# Styles
+dotnet_naming_style.pascal_case.required_prefix =
+dotnet_naming_style.pascal_case.required_suffix =
+dotnet_naming_style.pascal_case.word_separator =
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.begins_with_i.required_prefix = I
+dotnet_naming_style.begins_with_i.required_suffix =
+dotnet_naming_style.begins_with_i.word_separator =
+dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+# Règles d'analyse
+dotnet_code_quality_unused_parameters = all:suggestion
+
+# Fichiers JSON
+[*.json]
+indent_size = 2
+
+# Fichiers YAML
+[*.{yml,yaml}]
+indent_size = 2
+
+# Fichiers Markdown
+[*.md]
+trim_trailing_whitespace = false

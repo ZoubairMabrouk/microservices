@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- Exclude the test project folder from the main project's implicit compile glob -->
+  <ItemGroup>
+    <Compile Remove="MdxServices.Tests\**" />
+    <Content Remove="MdxServices.Tests\**" />
+    <EmbeddedResource Remove="MdxServices.Tests\**" />
+    <None Remove="MdxServices.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AnalysisServices.AdomdClient" Version="19.113.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+</Project>

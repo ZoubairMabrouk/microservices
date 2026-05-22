@@ -1,0 +1,58 @@
+# Patterns à ajouter au .gitignore existant
+
+# Logs et artifacts de tests
+test-results/
+test-results.trx
+*.trx
+
+# Couverture de code
+coverage.opencover.xml
+coverage/
+coveragereport/
+*.lcov
+
+# SonarCloud
+.sonarqube/
+
+# IDE
+.vscode/launch.json
+.vscode/tasks.json
+.idea/
+*.swp
+*.swo
+
+# Builds
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# NuGet
+.nuget/
+packages/
+*.nupkg
+*.snupkg
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+
+# Backups de déploiement
+backups/
+
+# Fichiers temporaires
+temp/
+tmp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env.local
+.env.*.local
