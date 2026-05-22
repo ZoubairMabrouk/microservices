@@ -76,7 +76,7 @@ jobs:
 
       - name: Update infra-deploy
         run: |
-          git clone https://x-access-token:${{ secrets.DEPLOY_REPO_TOKEN }}@github.com/zoubairmabrouk/infra-deploy.git
+          git clone https://x-access-token:${{ secrets.DEPLOY_PAT_TOKEN }}@github.com/zoubairmabrouk/infra-deploy.git
           cd infra-deploy
           sed -i "s/^RAG_VERSION=.*/RAG_VERSION=${{ steps.version.outputs.version }}/" .env.prod
           git config user.email "ci-bot@github.com"

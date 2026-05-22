@@ -20,7 +20,8 @@ jobs:
     with:
       service-name: auth-service
       service-path: auth-sevice/
+      solution-file: AUTH-Sevice.sln
       env-var-name: AUTH_VERSION
     secrets:
       GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
-      DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}
+      DEPLOY_PAT_TOKEN: ${{ secrets.DEPLOY_PAT_TOKEN }}

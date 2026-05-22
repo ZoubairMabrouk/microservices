@@ -10,13 +10,16 @@ on:
       service-path:
         required: true
         type: string
+      solution-file:
+        required: true
+        type: string          # ex: MyService.sln
       env-var-name:
         required: true
         type: string          # ex: AUTH_VERSION
     secrets:
       GHCR_TOKEN:
         required: true
-      DEPLOY_REPO_TOKEN:
+      DEPLOY_PAT_TOKEN:
         required: true
 
 jobs:
@@ -53,16 +56,16 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore
-        run: dotnet restore ${{ inputs.service-path }}
+        run: dotnet restore ${{ inputs.service-path }}${{ inputs.solution-file }}
 
       - name: Code quality
-        run: dotnet format ${{ inputs.service-path }} --verify-no-changes
+        run: dotnet format ${{ inputs.service-path }}${{ inputs.solution-file }} --verify-no-changes
 
       - name: Build
-        run: dotnet build ${{ inputs.service-path }} --no-restore -c Release
+        run: dotnet build ${{ inputs.service-path }}${{ inputs.solution-file }} --no-restore -c Release
 
       - name: Test
-        run: dotnet test ${{ inputs.service-path }} --no-build -c Release \
+        run: dotnet test ${{ inputs.service-path }}${{ inputs.solution-file }} --no-build -c Release \
                --logger "trx;LogFileName=results.trx" \
                --collect:"XPlat Code Coverage"
 
@@ -90,14 +93,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/zoubairmabrouk/${{ inputs.service-name }}:${{ steps.version.outputs.version }}
-            ghcr.io/zoubairmabrouk/${{ inputs.service-name }}:latest
+            ghcr.io/ZoubairMabrouk/${{ inputs.service-name }}:${{ steps.version.outputs.version }}
+            ghcr.io/ZoubairMabrouk/${{ inputs.service-name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Update infra-deploy
         run: |
-          git clone https://x-access-token:${{ secrets.DEPLOY_REPO_TOKEN }}@github.com/zoubairmabrouk/infra-deploy.git
+          git clone https://x-access-token:${{ secrets.DEPLOY_PAT_TOKEN }}@github.com/ZoubairMabrouk/infra-deploy.git
           cd infra-deploy
 
           # Mise à jour uniquement de la variable du service concerné
