@@ -1,0 +1,23 @@
+# .github/workflows/gateway-service.yml
+name: gateway-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gateway-service/**'
+      - '.github/workflows/gateway-service.yml'
+  pull_request:
+    paths:
+      - 'gateway-service/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/_build-dotnet.yml
+    with:
+      service-name: gateway-service
+      service-path: gateway-service/
+      env-var-name: GATEWAY_VERSION
+    secrets:
+      GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
+      DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}

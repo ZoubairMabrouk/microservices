@@ -1,0 +1,22 @@
+name: mdx-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mdx-service/**'
+      - '.github/workflows/mdx-service.yml'
+  pull_request:
+    paths:
+      - 'mdx-service/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/_build-dotnet.yml
+    with:
+      service-name: mdx-service
+      service-path: mdx-service/
+      env-var-name: MDX_VERSION
+    secrets:
+      GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
+      DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}

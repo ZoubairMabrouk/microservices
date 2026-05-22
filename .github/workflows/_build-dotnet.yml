@@ -1,0 +1,111 @@
+# .github/workflows/_build-dotnet.yml
+name: Reusable .NET build
+
+on:
+  workflow_call:
+    inputs:
+      service-name:
+        required: true
+        type: string
+      service-path:
+        required: true
+        type: string
+      env-var-name:
+        required: true
+        type: string          # ex: AUTH_VERSION
+    secrets:
+      GHCR_TOKEN:
+        required: true
+      DEPLOY_REPO_TOKEN:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # nécessaire pour git describe
+
+      - name: Resolve version
+        id: version
+        run: |
+          # SemVer si tag présent, sinon SHA court
+          if git describe --tags --exact-match 2>/dev/null; then
+            VERSION=$(git describe --tags --exact-match | sed 's/^v//')
+          else
+            VERSION=$(git rev-parse --short HEAD)
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Resolved version: $VERSION"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore ${{ inputs.service-path }}
+
+      - name: Code quality
+        run: dotnet format ${{ inputs.service-path }} --verify-no-changes
+
+      - name: Build
+        run: dotnet build ${{ inputs.service-path }} --no-restore -c Release
+
+      - name: Test
+        run: dotnet test ${{ inputs.service-path }} --no-build -c Release \
+               --logger "trx;LogFileName=results.trx" \
+               --collect:"XPlat Code Coverage"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ inputs.service-name }}
+          path: "**/*.trx"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Set up Docker Buildx (multi-arch)
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.service-path }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/zoubairmabrouk/${{ inputs.service-name }}:${{ steps.version.outputs.version }}
+            ghcr.io/zoubairmabrouk/${{ inputs.service-name }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update infra-deploy
+        run: |
+          git clone https://x-access-token:${{ secrets.DEPLOY_REPO_TOKEN }}@github.com/zoubairmabrouk/infra-deploy.git
+          cd infra-deploy
+
+          # Mise à jour uniquement de la variable du service concerné
+          sed -i "s/^${{ inputs.env-var-name }}=.*/${{ inputs.env-var-name }}=${{ steps.version.outputs.version }}/" .env.prod
+
+          git config user.email "ci-bot@github.com"
+          git config user.name  "CI Bot"
+          git add .env.prod
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "chore(${{ inputs.service-name }}): bump to ${{ steps.version.outputs.version }} [skip ci]"
+          git push

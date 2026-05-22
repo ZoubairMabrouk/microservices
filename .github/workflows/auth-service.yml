@@ -1,0 +1,23 @@
+# .github/workflows/auth-service.yml
+name: auth-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'auth-sevice/**'
+      - '.github/workflows/auth-service.yml'
+  pull_request:
+    paths:
+      - 'auth-sevice/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/_build-dotnet.yml
+    with:
+      service-name: auth-service
+      service-path: auth-sevice/
+      env-var-name: AUTH_VERSION
+    secrets:
+      GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
+      DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}

@@ -1,0 +1,86 @@
+# .github/workflows/rag-service.yml
+name: rag-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'rag-service/**'
+      - '.github/workflows/rag-service.yml'
+  pull_request:
+    paths:
+      - 'rag-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: version
+        run: |
+          if git describe --tags --exact-match 2>/dev/null; then
+            VERSION=$(git describe --tags --exact-match | sed 's/^v//')
+          else
+            VERSION=$(git rev-parse --short HEAD)
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r rag-service/requirements.txt
+          pip install ruff pytest pytest-cov
+
+      - name: Lint (ruff)
+        run: ruff check rag-service/
+
+      - name: Tests
+        run: pytest rag-service/ --cov=rag-service --cov-report=xml -q
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & push image
+        uses: docker/build-push-action@v6
+        with:
+          context: rag-service/
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/zoubairmabrouk/rag-service:${{ steps.version.outputs.version }}
+            ghcr.io/zoubairmabrouk/rag-service:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update infra-deploy
+        run: |
+          git clone https://x-access-token:${{ secrets.DEPLOY_REPO_TOKEN }}@github.com/zoubairmabrouk/infra-deploy.git
+          cd infra-deploy
+          sed -i "s/^RAG_VERSION=.*/RAG_VERSION=${{ steps.version.outputs.version }}/" .env.prod
+          git config user.email "ci-bot@github.com"
+          git config user.name  "CI Bot"
+          git add .env.prod
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "chore(rag-service): bump to ${{ steps.version.outputs.version }} [skip ci]"
+          git push
