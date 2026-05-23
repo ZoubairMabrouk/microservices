@@ -19,7 +19,7 @@ on:
     secrets:
       GHCR_TOKEN:
         required: true
-      DEPLOY_REPO_TOKEN:
+      DEPLOY_TAP_TOKEN:
         required: true
 env:
   DOTNET_VERSION: '8.0'
