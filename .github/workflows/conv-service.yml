@@ -6,9 +6,11 @@ on:
     paths:
       - 'conversation-history-service/**'
       - '.github/workflows/conv-service.yml'
+      - '.github/workflows/_build-dotnet.yml'
   pull_request:
     paths:
       - 'conversation-history-service/**'
+      - '.github/workflows/_build-dotnet.yml'
 
 jobs:
   build:

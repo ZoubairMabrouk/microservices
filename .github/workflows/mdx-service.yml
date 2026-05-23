@@ -6,9 +6,11 @@ on:
     paths:
       - 'mdx-service/**'
       - '.github/workflows/mdx-service.yml'
+      - '.github/workflows/_build-dotnet.yml'
   pull_request:
     paths:
       - 'mdx-service/**'
+      - '.github/workflows/_build-dotnet.yml'
 
 jobs:
   build:

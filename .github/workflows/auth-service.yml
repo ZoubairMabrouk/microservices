@@ -7,9 +7,11 @@ on:
     paths:
       - 'auth-sevice/**'
       - '.github/workflows/auth-service.yml'
+      - '.github/workflows/_build-dotnet.yml'
   pull_request:
     paths:
       - 'auth-sevice/**'
+      - '.github/workflows/_build-dotnet.yml'
 
 jobs:
   build:

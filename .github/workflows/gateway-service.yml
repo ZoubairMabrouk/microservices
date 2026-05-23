@@ -7,9 +7,11 @@ on:
     paths:
       - 'gateway-service/**'
       - '.github/workflows/gateway-service.yml'
+      - '.github/workflows/_build-dotnet.yml'
   pull_request:
     paths:
       - 'gateway-service/**'
+      - '.github/workflows/_build-dotnet.yml'
 
 jobs:
   build:
