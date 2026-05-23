@@ -25,4 +25,4 @@ jobs:
       env-var-name: MDX_VERSION
     secrets:
       GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
-      DEPLOY_PAT_TOKEN: ${{ secrets.DEPLOY_PAT_TOKEN }}
+      DEPLOY_REPO_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}

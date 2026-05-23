@@ -25,7 +25,7 @@ on:
       GHCR_TOKEN:
         required: true
 
-      DEPLOY_PAT_TOKEN:
+      DEPLOY_REPO_TOKEN:
         required: true
 
 env:
@@ -165,7 +165,7 @@ jobs:
       - name: Update infra-deploy repository
         run: |
 
-          git clone https://x-access-token:${{ secrets.DEPLOY_PAT_TOKEN }}@github.com/ZoubairMabrouk/infra-deploy.git
+          git clone https://x-access-token:${{ secrets.DEPLOY_REPO_TOKEN }}@github.com/ZoubairMabrouk/infra-deploy.git
 
           cd infra-deploy
 
