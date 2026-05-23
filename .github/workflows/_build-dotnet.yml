@@ -1,4 +1,5 @@
 # .github/workflows/_build-dotnet.yml
+
 name: Reusable .NET build
 
 on:
@@ -7,122 +8,124 @@ on:
       service-name:
         required: true
         type: string
+
       service-path:
         required: true
         type: string
+
       solution-file:
         required: true
-        type: string          # ex: MyService.sln
+        type: string
+
       env-var-name:
         required: true
-        type: string          # ex: AUTH_VERSION
+        type: string
+
     secrets:
       GHCR_TOKEN:
         required: true
+
       DEPLOY_TAP_TOKEN:
         required: true
-env:
-  DOTNET_VERSION: '8.0'
 
+env:
+  DOTNET_VERSION: "8.0.x"
 
 jobs:
+
+  # =========================================================
+  # CODE QUALITY
+  # =========================================================
   code-quality:
     name: Code Quality & Security Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout du code source
+
+      - name: Checkout source code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Configuration .NET ${{ env.DOTNET_VERSION }}
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Restauration des dépendances NuGet
+      - name: Restore dependencies
+        working-directory: ${{ inputs.service-path }}
         run: dotnet restore ${{ inputs.solution-file }}
 
-      - name: Build de vérification
-        run: dotnet build --no-restore --configuration Release ${{ inputs.solution-file }}
-
-      - name: Exécution des tests unitaires
+      - name: Build verification
+        working-directory: ${{ inputs.service-path }}
         run: |
-          dotnet test --no-build \
-            --configuration Release \
-            --verbosity normal \
+          dotnet build \
             ${{ inputs.solution-file }} \
+            --configuration Release \
+            --no-restore
+
+      - name: Run unit tests
+        working-directory: ${{ inputs.service-path }}
+        run: |
+          dotnet test \
+            ${{ inputs.solution-file }} \
+            --configuration Release \
+            --no-build \
+            --verbosity normal \
+            --logger "trx;LogFileName=results.trx"
         continue-on-error: true
 
-      - name: Publication des résultats de tests
-        uses: actions/upload-artifact@v4
+      - name: Upload test results
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ github.run_number}}
-          path: '**/TestResults/*.trx'
+          name: test-results-${{ inputs.service-name }}
+          path: |
+            ${{ inputs.service-path }}/**/*.trx
           retention-days: 30
-  
-          
+
+  # =========================================================
+  # BUILD & DEPLOY
+  # =========================================================
   build:
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
+
+    needs: code-quality
+
     permissions:
       contents: read
       packages: write
-    needs: code-quality
 
     outputs:
       version: ${{ steps.version.outputs.version }}
 
     steps:
-      # - name: Checkout
-      #   uses: actions/checkout@v4
-      #   with:
-      #     fetch-depth: 0        # nécessaire pour git describe
 
-      # - name: Resolve version
-      #   id: version
-      #   run: |
-      #     # SemVer si tag présent, sinon SHA court
-      #     if git describe --tags --exact-match 2>/dev/null; then
-      #       VERSION=$(git describe --tags --exact-match | sed 's/^v//')
-      #     else
-      #       VERSION=$(git rev-parse --short HEAD)
-      #     fi
-      #     echo "version=$VERSION" >> $GITHUB_OUTPUT
-      #     echo "Resolved version: $VERSION"
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # - name: Setup .NET
-      #   uses: actions/setup-dotnet@v4
-      #   with:
-      #     dotnet-version: '8.0.x'
+      # =====================================================
+      # VERSIONING
+      # =====================================================
+      - name: Resolve version
+        id: version
+        run: |
+          if git describe --tags --exact-match >/dev/null 2>&1; then
+            VERSION=$(git describe --tags --exact-match | sed 's/^v//')
+          else
+            VERSION=$(git rev-parse --short HEAD)
+          fi
 
-      # - name: Restore
-      #   working-directory: ${{ inputs.service-path }}
-      #   run: dotnet restore ${{ inputs.solution-file }}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Resolved version: $VERSION"
 
-      # - name: Code quality
-      #   working-directory: ${{ inputs.service-path }}
-      #   run: dotnet format ${{ inputs.solution-file }} --verify-no-changes
-
-      # - name: Build
-      #   working-directory: ${{ inputs.service-path }}
-      #   run: dotnet build ${{ inputs.solution-file }} --no-restore -c Release
-
-      # - name: Test
-      #   working-directory: ${{ inputs.service-path }}
-      #   run: dotnet test ${{ inputs.solution-file }} --no-build -c Release \
-      #          --logger "trx;LogFileName=results.trx" \
-      #          --collect:"XPlat Code Coverage"
-
-      # - name: Upload test results
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-results-${{ inputs.service-name }}
-      #     path: "**/*.trx"
-
+      # =====================================================
+      # DOCKER LOGIN
+      # =====================================================
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -130,32 +133,51 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Set up Docker Buildx (multi-arch)
+      # =====================================================
+      # BUILDX
+      # =====================================================
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build & push image
+      # =====================================================
+      # BUILD & PUSH
+      # =====================================================
+      - name: Build & push Docker image
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.service-path }}
+          file: ${{ inputs.service-path }}/Dockerfile
+
           platforms: linux/amd64,linux/arm64
+
           push: true
+
           tags: |
             ghcr.io/zoubairmabrouk/${{ inputs.service-name }}:${{ steps.version.outputs.version }}
             ghcr.io/zoubairmabrouk/${{ inputs.service-name }}:latest
+
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Update infra-deploy
+      # =====================================================
+      # UPDATE INFRA REPO
+      # =====================================================
+      - name: Update infra-deploy repository
         run: |
-          git clone https://x-access-token:${{ secrets.DEPLOY_PAT_TOKEN }}@github.com/ZoubairMabrouk/infra-deploy.git
+
+          git clone https://x-access-token:${{ secrets.DEPLOY_TAP_TOKEN }}@github.com/ZoubairMabrouk/infra-deploy.git
+
           cd infra-deploy
 
-          # Mise à jour uniquement de la variable du service concerné
           sed -i "s/^${{ inputs.env-var-name }}=.*/${{ inputs.env-var-name }}=${{ steps.version.outputs.version }}/" .env.prod
 
           git config user.email "ci-bot@github.com"
-          git config user.name  "CI Bot"
+          git config user.name "CI Bot"
+
           git add .env.prod
-          git diff --staged --quiet && echo "No changes" && exit 0
-          git commit -m "chore(${{ inputs.service-name }}): bump to ${{ steps.version.outputs.version }} [skip ci]"
+
+          git diff --staged --quiet && echo "No changes detected" && exit 0
+
+          git commit -m "chore(${{ inputs.service-name }}): bump image to ${{ steps.version.outputs.version }} [skip ci]"
+
           git push
