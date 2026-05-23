@@ -3,7 +3,7 @@ name: auth-service
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, develop]
     paths:
       - 'auth-sevice/**'
       - '.github/workflows/auth-service.yml'
