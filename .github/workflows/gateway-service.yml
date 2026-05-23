@@ -21,7 +21,7 @@ jobs:
     uses: ./.github/workflows/_build-dotnet.yml
     with:
       service-name: gateway-service
-      service-path: gateway-service/
+      service-path: api-gateway/
       solution-file: API-Gateway.sln
       env-var-name: GATEWAY_VERSION
     secrets:

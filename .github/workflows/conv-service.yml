@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/_build-dotnet.yml
     with:
       service-name: conv-service
-      service-path: conversation-history-service/
+      service-path: convesrsation-history-service/
       solution-file: ConvesrsationHistoryService.sln
       env-var-name: CONV_VERSION
     secrets:
