@@ -79,7 +79,7 @@ public class ClientControllerTests
             new()
             {
                 ["[Tiers Dim].[Tiers].[Tiers].[MEMBER_CAPTION]"] = "BETA",
-                ["[Measures].[Doc Total HT]"]  = 8088m,
+                ["[Measures].[Doc Total HT]"]  = 8080m,
                 ["[Measures].[Doc P Revient]"] = 5000m,
                 ["[Measures].[Gross Margin]"]  = 3000m,
                 ["[Measures].[Margin Rate %]"] = 0.375m

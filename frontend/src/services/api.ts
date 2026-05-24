@@ -80,7 +80,7 @@ function getMockData<T>(endpoint: string): T[] {
       { label: "2021", value: 102000 },
       { label: "2022", value: 120000 },
       { label: "2023", value: 150000 },
-      { label: "2024", value: 180880 },
+      { label: "2024", value: 180800 },
     ],
     "/revenue/by-month/2024": [
       { label: "Jan", value: 12000 }, { label: "Fév", value: 14500 },
@@ -98,15 +98,15 @@ function getMockData<T>(endpoint: string): T[] {
     ],
     "/revenue/by-client": [
       { client: "Société Alpha", totalHT: 52000, totalTTC: 61880 },
-      { client: "Entreprise Beta", totalHT: 38088, totalTTC: 45220 },
+      { client: "Entreprise Beta", totalHT: 38080, totalTTC: 45220 },
       { client: "Groupe Gamma", totalHT: 31000, totalTTC: 36890 },
       { client: "Delta Corp", totalHT: 27000, totalTTC: 32130 },
-      { client: "Epsilon SARL", totalHT: 18088, totalTTC: 21420 },
+      { client: "Epsilon SARL", totalHT: 18080, totalTTC: 21420 },
       { client: "Zeta Industries", totalHT: 14000, totalTTC: 16660 },
     ],
     "/revenue/top-clients": [
       { client: "Société Alpha", totalHT: 52000, totalTTC: 61880 },
-      { client: "Entreprise Beta", totalHT: 38088, totalTTC: 45220 },
+      { client: "Entreprise Beta", totalHT: 38080, totalTTC: 45220 },
       { client: "Groupe Gamma", totalHT: 31000, totalTTC: 36890 },
     ],
     "/revenue/bottom-clients": [
@@ -116,15 +116,15 @@ function getMockData<T>(endpoint: string): T[] {
     ],
     "/revenue/concentration": [
       { client: "Société Alpha", revenue: 52000, sharePercent: 28.9 },
-      { client: "Entreprise Beta", revenue: 38088, sharePercent: 21.1 },
+      { client: "Entreprise Beta", revenue: 38080, sharePercent: 21.1 },
       { client: "Groupe Gamma", revenue: 31000, sharePercent: 17.2 },
       { client: "Delta Corp", revenue: 27000, sharePercent: 15.0 },
       { client: "Autres", revenue: 32000, sharePercent: 17.8 },
     ],
     "/trends/yoy-revenue/2024/2023": [
       { client: "Société Alpha", previousYear: 44000, currentYear: 52000, growth: 18.2 },
-      { client: "Entreprise Beta", previousYear: 35000, currentYear: 38088, growth: 8.6 },
-      { client: "Groupe Gamma", previousYear: 28088, currentYear: 31000, growth: 10.7 },
+      { client: "Entreprise Beta", previousYear: 35000, currentYear: 38080, growth: 8.6 },
+      { client: "Groupe Gamma", previousYear: 28080, currentYear: 31000, growth: 10.7 },
       { client: "Delta Corp", previousYear: 30000, currentYear: 27000, growth: -10.0 },
     ],
     "/trends/yoy-volume/2024/2023": [
@@ -217,13 +217,13 @@ function getMockData<T>(endpoint: string): T[] {
     ],
     "/clients/above-average": [
       { client: "Société Alpha", totalHT: 52000 },
-      { client: "Entreprise Beta", totalHT: 38088 },
+      { client: "Entreprise Beta", totalHT: 38080 },
       { client: "Groupe Gamma", totalHT: 31000 },
     ],
     "/clients/outstanding-balance": [
       { client: "Société Alpha", totalTTC: 61880, paid: 45000, remaining: 16880 },
       { client: "Entreprise Beta", totalTTC: 45220, paid: 45220, remaining: 0 },
-      { client: "Groupe Gamma", totalTTC: 36890, paid: 28088, remaining: 8890 },
+      { client: "Groupe Gamma", totalTTC: 36890, paid: 28080, remaining: 8890 },
       { client: "Delta Corp", totalTTC: 32130, paid: 20000, remaining: 12130 },
     ],
     "/clients/high-discount-low-margin": [
@@ -232,10 +232,10 @@ function getMockData<T>(endpoint: string): T[] {
     ],
     "/clients/by-margin": [
       { client: "Société Alpha", totalHT: 52000, cost: 31200, margin: 20800, marginRate: 40.0 },
-      { client: "Entreprise Beta", totalHT: 38088, cost: 24700, margin: 13300, marginRate: 35.0 },
+      { client: "Entreprise Beta", totalHT: 38080, cost: 24700, margin: 13300, marginRate: 35.0 },
       { client: "Groupe Gamma", totalHT: 31000, cost: 21700, margin: 9300, marginRate: 30.0 },
       { client: "Delta Corp", totalHT: 27000, cost: 23000, margin: 4000, marginRate: 14.8 },
-      { client: "Epsilon SARL", totalHT: 18088, cost: 14400, margin: 3600, marginRate: 20.0 },
+      { client: "Epsilon SARL", totalHT: 18080, cost: 14400, margin: 3600, marginRate: 20.0 },
     ],
     "/clients/avg-order-value": [
       { client: "Société Alpha", orderCount: 24, avgOrderValue: 2167 },

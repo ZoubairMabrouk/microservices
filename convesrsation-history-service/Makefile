@@ -163,7 +163,7 @@ quick: restore build test ## Quick build & test
 
 health: ## Tester l'endpoint santé
 	@echo "$(BLUE)Testing health endpoint...$(NC)"
-	@curl -s http://localhost:8088/health | jq . || echo "Health endpoint unreachable"
+	@curl -s http://localhost:8080/health | jq . || echo "Health endpoint unreachable"
 
 deps: ## Lister les dépendances
 	@echo "$(BLUE)NuGet Dependencies:$(NC)"

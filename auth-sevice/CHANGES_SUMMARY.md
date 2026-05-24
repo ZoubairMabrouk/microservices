@@ -42,7 +42,7 @@
 ### 5. 🏥 Healthchecks améliorés
 ```diff
 healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+  test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
 - interval: 10s
 + interval: 30s
 - retries: 10
