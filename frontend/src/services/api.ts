@@ -1,5 +1,5 @@
 // API base URL - change this to your actual API
-const API_BASE = "http://localhost:5078/api";
+const API_BASE = (import.meta.env.VITE_API_BASE as string);
 
 interface ApiResponse<T> {
   success: boolean;
@@ -14,12 +14,10 @@ async function fetchApi<T>(endpoint: string): Promise<T[]> {
     if (json.success) return json.data;
     return [];
   } catch {
-    // Return mock data in development
     return getMockData<T>(endpoint);
   }
 }
 
-// Revenue
 export const revenueApi = {
   byYear: () => fetchApi<{ label: string; value: number }>("/revenue/by-year"),
   byMonth: (year: number) => fetchApi<{ label: string; value: number }>(`/revenue/by-month/${year}`),

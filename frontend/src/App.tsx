@@ -29,33 +29,25 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      {/* <DiscussionBull /> */}
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            {/* Public */}
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-
-            {/* Authenticated */}
-            <Route>
-              <Route element={<DashboardLayout />}>
-                <Route path="/" element={<OverviewPage />} />
-                <Route path="/revenue" element={<RevenuePage />} />
-                <Route path="/trends" element={<TrendsPage />} />
-                <Route path="/tax" element={<TaxPage />} />
-                <Route path="/clients" element={<ClientsPage />} />
-                <Route path="/discounts" element={<DiscountsPage />} />
-                <Route path="/chat" element={<GenerativePage />} />
-                <Route path="/me" element={<ProfilePage />} />
-
-                {/* Admin only */}
-                <Route element={<ProtectedRoute roles={["Admin"]} />}>
+              <Route element={<ProtectedRoute roles={["User", "Admin"]} />}>
+                  <Route element={<DashboardLayout />}>
+                  <Route path="/" element={<OverviewPage />} />
+                  <Route path="/revenue" element={<RevenuePage />} />
+                  <Route path="/trends" element={<TrendsPage />} />
+                  <Route path="/tax" element={<TaxPage />} />
+                  <Route path="/clients" element={<ClientsPage />} />
+                  <Route path="/discounts" element={<DiscountsPage />} />
+                  <Route path="/chat" element={<GenerativePage />} />
+                  <Route path="/me" element={<ProfilePage />} />
+              <Route element={<ProtectedRoute roles={["Admin"]} />}>
                   <Route path="/admin/users" element={<AdminUsersPage />} />
-                </Route>
+              </Route>
               </Route>
             </Route>
-
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -1,62 +1,43 @@
-# .github/workflows/_build-dotnet.yml
-
 name: Reusable .NET build
-
 on:
   workflow_call:
     inputs:
       service-name:
         required: true
-        type: string
-    
+        type: string    
       service-path:
         required: true
         type: string
-
       solution-file:
         required: true
         type: string
-
       env-var-name:
         required: true
         type: string
-
     secrets:
       GHCR_TOKEN:
         required: true
-
       DEPLOY_REPO_TOKEN:
         required: true
-
 env:
   DOTNET_VERSION: "8.0.x"
 
 jobs:
-
-  # =========================================================
-  # CODE QUALITY
-  # =========================================================
   code-quality:
     name: Code Quality & Security Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
     steps:
-
       - name: Checkout source code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
       - name: Restore dependencies
         working-directory: ${{ inputs.service-path }}
         run: dotnet restore ${{ inputs.solution-file }}
-
       - name: Build verification
         working-directory: ${{ inputs.service-path }}
         run: |
@@ -64,7 +45,6 @@ jobs:
             ${{ inputs.solution-file }} \
             --configuration Release \
             --no-restore
-
       - name: Run unit tests
         working-directory: ${{ inputs.service-path }}
         run: |
@@ -74,8 +54,6 @@ jobs:
             --no-build \
             --verbosity normal \
             --logger "trx;LogFileName=results.trx"
-        continue-on-error: true
-
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -178,6 +156,6 @@ jobs:
 
           git diff --staged --quiet && echo "No changes detected" && exit 0
 
-          git commit -m "chore(${{ inputs.service-name }}): bump image to ${{ steps.version.outputs.version }} [skip ci]"
+          git commit -m "${{ inputs.service-name }}): bump image to ${{ steps.version.outputs.version }}"
 
           git push

@@ -28,7 +28,7 @@ import requests
 
 
 class BaseLLMClient:
-    def __init__(self, model: str = "phi3:mini", temperature: float = 0.0):
+    def __init__(self, model: str = "llama3.2:3b", temperature: float = 0.0):
         self._model = model
         self._temperature = temperature
         self._url = os.environ.get(
@@ -51,7 +51,7 @@ class BaseLLMClient:
                     "stream": False,
                     "keep_alive": "15m"
                 },
-                timeout=120
+                timeout=1200
             )
 
             print("📥 Response received from Ollama")
