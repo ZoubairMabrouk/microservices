@@ -5,4 +5,4 @@ export const AUTH_API_BASE =
 export const GATEWAY_API_BASE = 
   (import.meta.env.GATEWAY_API_BASE as string) || "http://localhost:5085/api";
 
-  export const API_GATEWAY_URL = "http://localhost:5085";
+  export const API_GATEWAY_URL = "http://51.68.44.166:8088/api";

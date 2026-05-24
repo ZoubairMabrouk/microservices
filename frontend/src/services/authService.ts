@@ -1,4 +1,4 @@
-import { AUTH_API_BASE } from "./env.dev";
+import { API_GATEWAY_URL } from "./env.dev";
 import { TokenService, isExpired } from "./tokenService";
 
 export interface AuthUser {
@@ -46,7 +46,7 @@ async function parseError(res: Response): Promise<ApiError> {
 
 /** Low-level fetch without auth (for login/register/refresh). */
 async function rawFetch<T>(path: string, init: RequestInit): Promise<T> {
-  const res = await fetch(`${AUTH_API_BASE}${path}`, {
+  const res = await fetch(`${API_GATEWAY_URL}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export async function authFetch<T>(path: string, init: RequestInit = {}): Promis
   }
 
   const doFetch = async (bearer: string | null) =>
-    fetch(`${AUTH_API_BASE}${path}`, {
+    fetch(`${API_GATEWAY_URL}${path}`, {
       ...init,
       headers: {
         "Content-Type": "application/json",
