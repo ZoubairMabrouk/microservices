@@ -10,10 +10,10 @@ services:
     hostname: auth-service
     restart: always
     ports:
-      - "8084:8080"
+      - "8084:8088"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: http://+:8088
       ConnectionStrings__DefaultConnection: Server=sqlserver;Database=auth_service_db;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=True;Connection Timeout=30;
       Jwt__SecretKey: qsjhdhqsdhhuzhdhdgeudgudsgv,nfkuhzgezfuvjhknfjhsdbgvsqjhvvudsdfhvfuzbhjdqsjbddahugfu
       Jwt__Issuer: AUTH-Sevice
@@ -24,7 +24,7 @@ services:
     networks:
       - platform-network
     # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+    #   test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
     #   interval: 30s
     #   timeout: 10s
     #   retries: 3

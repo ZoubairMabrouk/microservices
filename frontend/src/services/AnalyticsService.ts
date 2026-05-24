@@ -1,7 +1,7 @@
 import { cleanMDX } from "@/services/mdx.utils";
 
 const API_BASE = "http://localhost:5078/api";
-const FASTAPI_BASE = "http://localhost:8000";
+const FASTAPI_BASE = "http://localhost:8088";
 const TOP_K = 15;
 
 export class AnalyticsService {

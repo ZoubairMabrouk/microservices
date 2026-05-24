@@ -54,13 +54,13 @@ pip install -r requirements.txt
 
 ```bash
 cd app
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn main:app --host 0.0.0.0 --port 8088
 ```
 
 3. Appeler l’API :
 
 ```bash
-curl -X POST "http://localhost:8000/ask" \
+curl -X POST "http://localhost:8088/ask" \
   -H "Content-Type: application/json" \
   -d '{"prompt": "Quel MDX pour le chiffre d'affaires par année ?"}'
 ```
@@ -76,7 +76,7 @@ docker build -t ragservice .
 ### Run
 
 ```bash
-docker run -p 8000:8000 \
+docker run -p 8088:8088 \
   -e OL_BASE_URL=http://<OLLAMA_HOST>:11434/api/chat \
   ragservice
 ```
@@ -91,7 +91,7 @@ Pour lancer le service backend avec Docker Compose :
 docker compose up --build
 ```
 
-Le service sera exposé sur `http://localhost:8000`.
+Le service sera exposé sur `http://localhost:8088`.
 
 ## Variables d’environnement
 

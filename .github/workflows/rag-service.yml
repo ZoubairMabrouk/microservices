@@ -84,5 +84,5 @@ jobs:
           git config user.name  "CI Bot"
           git add .env.prod
           git diff --staged --quiet && echo "No changes" && exit 0
-          git commit -m "chore(rag-service): bump to ${{ steps.version.outputs.version }} [skip ci]"
+          git commit -m "(rag-service): bump to ${{ steps.version.outputs.version }}"
           git push

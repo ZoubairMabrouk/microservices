@@ -25,6 +25,7 @@ builder.Services.AddCors(opt =>
 
 builder.Services.AddScoped<IMdxService, MdxService>();
 builder.Services.AddScoped<IMdxQuery, MdxQuery>();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -43,5 +44,5 @@ app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHealthChecks("/health");
 app.Run();

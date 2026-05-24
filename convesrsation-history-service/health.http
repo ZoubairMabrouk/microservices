@@ -1,5 +1,5 @@
 # Endpoint de santé pour vérifier que le service est prêt
-@host = http://localhost:8080
+@host = http://localhost:8088
 @contentType = application/json
 
 ### Health Check

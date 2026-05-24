@@ -348,7 +348,7 @@ public class MdxMapperTests
         var data = new[]
         {
             Row(("[Tiers Dim].[Tiers].[Tiers].[MEMBER_CAPTION]", "GAMMA"),
-                ("[Measures].[Doc Total HT]",    8000m),
+                ("[Measures].[Doc Total HT]",    8088m),
                 ("[Measures].[Revenue Share %]", 0.25m))
         };
 
@@ -356,7 +356,7 @@ public class MdxMapperTests
 
         Assert.Single(result);
         Assert.Equal("GAMMA", result[0].Client);
-        Assert.Equal(8000m, result[0].Revenue);
+        Assert.Equal(8088m, result[0].Revenue);
         Assert.Equal(0.25m, result[0].SharePercent);
     }
 
@@ -413,7 +413,7 @@ public class MdxMapperTests
         var data = new[]
         {
             Row(("[Tiers Dim].[Tiers].[Tiers].[MEMBER_CAPTION]", "THETA"),
-                ("[Measures].[Revenue 2022]",  8000m),
+                ("[Measures].[Revenue 2022]",  8088m),
                 ("[Measures].[Revenue 2023]", 10000m),
                 ("[Measures].[YoY Growth %]",  0.25m))
         };
@@ -422,7 +422,7 @@ public class MdxMapperTests
 
         Assert.Single(result);
         Assert.Equal("THETA", result[0].Client);
-        Assert.Equal(8000m, result[0].PreviousYear);
+        Assert.Equal(8088m, result[0].PreviousYear);
         Assert.Equal(10000m, result[0].CurrentYear);
         Assert.Equal(0.25m, result[0].Growth);
     }

@@ -75,7 +75,7 @@ services:
 **nginx.conf example:**
 ```nginx
 upstream auth_service {
-    server auth-service:8080;
+    server auth-service:8088;
 }
 
 server {
@@ -175,7 +175,7 @@ spec:
           app: api-gateway
     ports:
     - protocol: TCP
-      port: 8080
+      port: 8088
 ```
 
 ### 5. 📦 Scan de vulnérabilités
