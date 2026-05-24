@@ -6,129 +6,148 @@
   },
 
   "AllowedOrigins": [
-    "https://business-pulse-two.vercel.app",
-    "*"
+    "https://business-pulse-two.vercel.app"
   ],
 
   "ReverseProxy": {
-      "Routes": {
+    "Routes": {
 
-        "auth-public": {
-          "ClusterId": "auth-cluster",
-          "AuthorizationPolicy": "Ananymous",
-          "Match": {
-            "Path": "/api/auth/{**catch-all}"
-          },
-          "Transforms": [
-            { "RequestHeaderOriginalHost": "false" },
-            { "X-Forwarded": "Set" }
-          ]
+      "auth-public": {
+        "ClusterId": "auth-cluster",
+        "AuthorizationPolicy": "Anonymous",
+        "Match": {
+          "Path": "/api/auth/{**catch-all}"
         },
+        "Transforms": [
+          { "RequestHeaderOriginalHost": "false" },
+          { "X-Forwarded": "Set" }
+        ]
+      },
 
-        "user-me": {
-          "ClusterId": "auth-cluster",
-          "AuthorizationPolicy": "authenticated",
-          "Match": {
-            "Path": "/api/user/{**catch-all}"
-          },
-          "Transforms": [
-            { "RequestHeaderOriginalHost": "false" },
-            { "X-Forwarded": "Set" }
-          ]
+      "user-me": {
+        "ClusterId": "auth-cluster",
+        "AuthorizationPolicy": "authenticated",
+        "Match": {
+          "Path": "/api/user/{**catch-all}"
         },
+        "Transforms": [
+          { "RequestHeaderOriginalHost": "false" },
+          { "X-Forwarded": "Set" }
+        ]
+      },
 
-        "admin-users": {
-          "ClusterId": "auth-cluster",
-          "AuthorizationPolicy": "admin-only",
-          "Match": {
-            "Path": "/api/users/{**catch-all}"
-          },
-          "Transforms": [
-            { "RequestHeaderOriginalHost": "false" },
-            { "X-Forwarded": "Set" }
-          ]
+      "admin-users": {
+        "ClusterId": "auth-cluster",
+        "AuthorizationPolicy": "admin-only",
+        "Match": {
+          "Path": "/api/users/{**catch-all}"
         },
+        "Transforms": [
+          { "RequestHeaderOriginalHost": "false" },
+          { "X-Forwarded": "Set" }
+        ]
+      },
 
-        "mdx-clients": {
-          "ClusterId": "mdx-cluster",
-          "AuthorizationPolicy": "authenticated",
-          "Match": {
-            "Path": "/api/clients/{**catch-all}"
-          },
-          "Transforms": [
-            { "RequestHeaderOriginalHost": "false" },
-            { "X-Forwarded": "Set" }
-          ]
+      "mdx-clients": {
+        "ClusterId": "mdx-cluster",
+        "AuthorizationPolicy": "authenticated",
+        "Match": {
+          "Path": "/api/clients/{**catch-all}"
         },
+        "Transforms": [
+          { "RequestHeaderOriginalHost": "false" },
+          { "X-Forwarded": "Set" }
+        ]
+      },
 
-        "rag-ask": {
-          "ClusterId": "rag-cluster",
-          "AuthorizationPolicy": "authenticated",
-          "Match": {
-            "Path": "/ask",
-            "Methods": ["POST"]
-          },
-          "Transforms": [
-            { "RequestHeaderOriginalHost": "false" },
-            { "X-Forwarded": "Set" }
-          ]
+      "rag-ask": {
+        "ClusterId": "rag-cluster",
+        "AuthorizationPolicy": "authenticated",
+        "Match": {
+          "Path": "/ask",
+          "Methods": ["POST"]
         },
-        "conversation-history": {
-          "ClusterId": "conv-cluster",
-          "AuthorizationPolicy": "authenticated",
-          "Match": {
-            "Path": "/api/conversation-history/{**catch-all}"
+        "Transforms": [
+          { "RequestHeaderOriginalHost": "false" },
+          { "X-Forwarded": "Set" }
+        ]
+      },
+
+      "conversation-history": {
+        "ClusterId": "conv-cluster",
+        "AuthorizationPolicy": "authenticated",
+        "Match": {
+          "Path": "/api/conversation-history/{**catch-all}"
+        },
+        "Transforms": [
+          { "RequestHeaderOriginalHost": "false" },
+          { "X-Forwarded": "Set" }
+        ]
+      }
+    },
+
+    "Clusters": {
+      "auth-cluster": {
+        "LoadBalancingPolicy": "RoundRobin",
+        "Destinations": {
+          "primary": { "Address": "http://auth-service:8088/" }
+        },
+        "HealthCheck": {
+          "Active": {
+            "Enabled": true,
+            "Interval": "00:00:10",
+            "Timeout": "00:00:05",
+            "Policy": "ConsecutiveFailures",
+            "Path": "/health"
           },
-          "Transforms": [
-            { "RequestHeaderOriginalHost": "false" },
-            { "X-Forwarded": "Set" }
-          ]
+          "ConsecutiveFailuresHealthPolicy": { "DefaultThreshold": 3 }
         }
       },
 
-      "Clusters": {
-        "auth-cluster": {
-          "LoadBalancingPolicy": "RoundRobin",
-          "Destinations": {
-            "primary": { "Address": "http://auth-service:8088/" }
+      "mdx-cluster": {
+        "LoadBalancingPolicy": "RoundRobin",
+        "Destinations": {
+          "primary": { "Address": "http://mdx-service:8088/" }
+        },
+        "HealthCheck": {
+          "Active": {
+            "Enabled": true,
+            "Interval": "00:00:10",
+            "Timeout": "00:00:05",
+            "Policy": "ConsecutiveFailures",
+            "Path": "/health"
           },
-          "HealthCheck": {
-            "Active": {
-              "Enabled": true,
-              "Interval": "00:00:10",
-              "Timeout": "00:00:05",
-              "Policy": "ConsecutiveFailures",
-              "Path": "/health"
-            }
-          }
+          "ConsecutiveFailuresHealthPolicy": { "DefaultThreshold": 3 }
+        }
+      },
+
+      "rag-cluster": {
+        "LoadBalancingPolicy": "RoundRobin",
+        "Destinations": {
+          "primary": { "Address": "http://rag-service:8088/" }
         },
-        "mdx-cluster": {
-          "LoadBalancingPolicy": "RoundRobin",
-          "Destinations": {
-            "primary": { "Address": "http://mdx-service:8088/" }
-          },
-          "HealthCheck": {
-            "Active": {
-              "Enabled": true,
-              "Interval": "00:00:10",
-              "Timeout": "00:00:05",
-              "Policy": "ConsecutiveFailures",
-              "Path": "/health"
-            }
+        "HealthCheck": {
+          "Passive": {
+            "Enabled": true,
+            "Policy": "TransportFailureRate",
+            "ReactivationPeriod": "00:02:00"
           }
+        }
+      },
+
+      "conv-cluster": {
+        "LoadBalancingPolicy": "RoundRobin",
+        "Destinations": {
+          "primary": { "Address": "http://conv-service:8088/" }
         },
-        "rag-cluster": {
-          "LoadBalancingPolicy": "RoundRobin",
-          "Destinations": {
-            "primary": { "Address": "http://rag-service:8088/" }
-          }
-        },
-        "conv-cluster": {
-          "LoadBalancingPolicy": "RoundRobin",
-          "Destinations": {
-            "primary": { "Address": "http://conv-service:8088/" }
+        "HealthCheck": {
+          "Passive": {
+            "Enabled": true,
+            "Policy": "TransportFailureRate",
+            "ReactivationPeriod": "00:02:00"
           }
         }
       }
     }
   }
+}

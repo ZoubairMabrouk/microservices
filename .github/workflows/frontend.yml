@@ -62,3 +62,14 @@ jobs:
 
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Update infra-deploy
+        run: |
+          git clone https://x-access-token:${{ secrets.DEPLOY_REPO_TOKEN }}@github.com/zoubairmabrouk/infra-deploy.git
+          cd infra-deploy
+          sed -i "s/^FRONTEND_VERSION=.*/FRONTEND_VERSION=${{ steps.version.outputs.version }}/" .env.prod
+          git config user.email "ci-bot@github.com"
+          git config user.name  "CI Bot"
+          git add .env.prod
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "(frontend): bump to ${{ steps.version.outputs.version }}"
+          git push

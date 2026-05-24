@@ -61,7 +61,7 @@ try
         options.AddPolicy("admin-only", policy =>
             policy.RequireAuthenticatedUser()
                   .RequireRole("admin"));
-        options.AddPolicy("Ananymous", policy =>
+        options.AddPolicy("Anonymous", policy =>
             policy.RequireAssertion(_ => true));
     });
 
